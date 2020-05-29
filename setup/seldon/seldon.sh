@@ -2,7 +2,12 @@
 kubectl create namespace seldon-system
 helm install seldon-core seldon-core-operator \
     --repo https://storage.googleapis.com/seldon-charts \
-    --set usageMetrics.enabled=true,crd.create=true \
+    --set usageMetrics.enabled=true,crd.create=true,istio.gateway="seldon-system/seldon-gateway",istio.enabled=true \
+    --namespace seldon-system
+
+helm upgrade seldon-core seldon-core-operator \
+    --repo https://storage.googleapis.com/seldon-charts \
+    --set usageMetrics.enabled=true,crd.create=true,istio.gateway="seldon-system/seldon-gateway",istio.enabled=true \
     --namespace seldon-system
 # https://docs.seldon.io/projects/seldon-core/en/latest/graph/inference-graph.html - deploys "simple.yaml"
 # https://www.kubeflow.org/docs/components/serving/seldon/#seldon-serving

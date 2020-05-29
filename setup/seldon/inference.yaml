@@ -1,15 +1,15 @@
 apiVersion: machinelearning.seldon.io/v1
 kind: SeldonDeployment
 metadata:
-  name: seldon-model
+  name: seldonmodel
 spec:
   name: test-deployment
   predictors:
   - componentSpecs:
     - spec:
         containers:
-        - image: seldonio/mock_classifier_rest:1.3
-          name: classifier
+        - name: classifier
+          image: seldonio/mock_classifier:1.0
     graph:
       children: []
       endpoint:
