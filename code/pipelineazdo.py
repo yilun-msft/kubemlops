@@ -87,7 +87,7 @@ def tacosandburritos_train(
                                           model_folder=model_folder,
                                           images=training_dataset,
                                           dataset=operations['preprocess'].outputs['dataset']). \
-            set_memory_request('6G'). \
+            set_memory_request('1G'). \
             add_env_variable(V1EnvVar(name="RUN_ID", value=dsl.RUN_ID_PLACEHOLDER)). \
             add_env_variable(V1EnvVar(name="MLFLOW_TRACKING_URI", value=mlflow_url)). \
             add_env_variable(V1EnvVar(name="GIT_PYTHON_REFRESH", value='quiet')). \
