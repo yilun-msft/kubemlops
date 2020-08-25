@@ -102,20 +102,8 @@ stages:
     - group: kubeflow-azdo-sample
     jobs:
       - job: "Upload_Pipeline"
+        pool: jotaylo
         steps:
-        - download: current
-          artifact: image_tags
-          displayName: "Download image_tags"
-        - task: UsePythonVersion@0
-          inputs:
-            versionSpec: '3.7'
-            addToPath: true
-            architecture: 'x64'
-        - task: CmdLine@2
-          displayName: "Install Kubeflow SDK" 
-          inputs:
-            script: |
-              pip install kfp --upgrade
         - task: Bash@3
           displayName: "Compile Pipeline"
           inputs:
