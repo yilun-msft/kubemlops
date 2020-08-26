@@ -120,7 +120,8 @@ stages:
                 export DATABRICKS_TAG=`cat $(Pipeline.Workspace)/image_tags/databricks_container`
               fi
 
-              python code/pipelineazdo.py
+              pip3 install kubernetes kfp
+              python3 code/pipelineazdo.py
         - task: Bash@3
           name: "kfpauth"
           displayName: "Authenticate KFP"
@@ -129,7 +130,7 @@ stages:
             script: |
               pip3 install adal --upgrade
               # Avoid returning token from python script directly to avoid it getting exposed over stdoutput      
-              echo "##vso[task.setvariable variable=KFP_API_TOKEN;issecret=true;isOutput=true]$(python code/utils/get_kfp_auth_token.py --tenant $(KF_TENANT_ID) --service_principal $(KF_CLIENT_ID) --sp_secret $(KF_CLIENT_SECRET) 2>&1 >/dev/null)"               
+              echo "##vso[task.setvariable variable=KFP_API_TOKEN;issecret=true;isOutput=true]$(python3 code/utils/get_kfp_auth_token.py --tenant $(KF_TENANT_ID) --service_principal $(KF_CLIENT_ID) --sp_secret $(KF_CLIENT_SECRET) 2>&1 >/dev/null)"               
         - task: KubeflowUploadPipeline@0
           displayName: "Upload Pipeline to KubeFlow" 
           inputs:
