@@ -110,8 +110,8 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              sudo apt-get update
-              sudo apt-get install python3.7 python3-pip -y
+              # sudo apt-get update -y
+              # sudo apt-get install python3.7 python3-pip -y
               pip3 install adal --upgrade
               # Avoid returning token from python script directly to avoid it getting exposed over stdoutput      
               echo "##vso[task.setvariable variable=KFP_API_TOKEN;issecret=true;isOutput=true]$(python3 code/utils/get_kfp_auth_token.py --tenant $(KF_TENANT_ID) --service_principal $(KF_CLIENT_ID) --sp_secret $(KF_CLIENT_SECRET) 2>&1 >/dev/null)"               
