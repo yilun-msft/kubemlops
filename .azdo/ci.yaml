@@ -105,29 +105,13 @@ stages:
         pool: jotaylo
         steps:
         - task: Bash@3
-          displayName: "Compile Pipeline"
-          inputs:
-            targetType: 'inline'
-            script: |
-              if [ -d "$(Pipeline.Workspace)/image_tags" ]; then
-                export MLFLOWPROJECT_TAG=`cat $(Pipeline.Workspace)/image_tags/mlflowproject_container`
-                export AZDOCALLBACK_TAG=`cat $(Pipeline.Workspace)/image_tags/azdocallback_container`
-                export PREPROCESS_TAG=`cat $(Pipeline.Workspace)/image_tags/preprocess_container`
-                export REGISTERARTIFACTS_TAG=`cat $(Pipeline.Workspace)/image_tags/registerartifacts_container`
-                export REGISTERMLFLOW_TAG=`cat $(Pipeline.Workspace)/image_tags/registermlflow_container`
-                export AML_REGISTER_MODEL_TAG=`cat $(Pipeline.Workspace)/image_tags/aml-register-model_container`
-                export TRAINING_TAG=`cat $(Pipeline.Workspace)/image_tags/training_container`
-                export DATABRICKS_TAG=`cat $(Pipeline.Workspace)/image_tags/databricks_container`
-              fi
-
-              pip3 install kubernetes kfp
-              python3 code/pipelineazdo.py
-        - task: Bash@3
           name: "kfpauth"
           displayName: "Authenticate KFP"
           inputs:
             targetType: 'inline'
             script: |
+              sudo apt-get update
+              sudo apt-get install python3.7 python3-pip -y
               pip3 install adal --upgrade
               # Avoid returning token from python script directly to avoid it getting exposed over stdoutput      
               echo "##vso[task.setvariable variable=KFP_API_TOKEN;issecret=true;isOutput=true]$(python3 code/utils/get_kfp_auth_token.py --tenant $(KF_TENANT_ID) --service_principal $(KF_CLIENT_ID) --sp_secret $(KF_CLIENT_SECRET) 2>&1 >/dev/null)"               
