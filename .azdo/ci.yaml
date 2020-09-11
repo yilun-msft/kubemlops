@@ -203,23 +203,23 @@ stages:
               # echo $(kf_pipeline_version_id)
               # echo $(kf_experiment_id)
 
-      - job: "Invoke_Pipeline"
-        dependsOn: "Upload_Pipeline"
-        pool: server
-        variables:
-          PIPELINE_VERSION_ID: $[ dependencies.Upload_Pipeline.outputs['setpipelinevars.KFPIPELINEVERSIONID'] ]
-          EXPERIMENT_ID: $[ dependencies.Upload_Pipeline.outputs['setpipelinevars.KPEXPID'] ]          
-          KFP_API_TOKEN: $[ dependencies.Upload_Pipeline.outputs['kfpauth.KFP_API_TOKEN'] ]          
-        steps:
-        - task: private-kfexperimentrun-async@0
-          displayName: "Invoke Pipeline"
-          inputs:
-            kubeflowEndpoint: '$(KF_ENDPOINT)'
-            bearerToken: '$(KFP_API_TOKEN)'
-            pipelineVersionID: '$(PIPELINE_VERSION_ID)'
-            experimentID: '$(EXPERIMENT_ID)'
-            runName: '$(KF_RUN_NAME)'
-            pipelineParams: '$(KF_PIPELINE_PARAMS2)'
-            runDescription: "{'build_number':'$(Build.BuildNumber)','repo_name':'$(Build.Repository.Name)','branch_name':'$(Build.SourceBranchName)','queued_by':'$(Build.QueuedBy)'}"
+      # - job: "Invoke_Pipeline"
+      #   dependsOn: "Upload_Pipeline"
+      #   pool: server
+      #   variables:
+      #     PIPELINE_VERSION_ID: $[ dependencies.Upload_Pipeline.outputs['setpipelinevars.KFPIPELINEVERSIONID'] ]
+      #     EXPERIMENT_ID: $[ dependencies.Upload_Pipeline.outputs['setpipelinevars.KPEXPID'] ]          
+      #     KFP_API_TOKEN: $[ dependencies.Upload_Pipeline.outputs['kfpauth.KFP_API_TOKEN'] ]          
+      #   steps:
+      #   - task: private-kfexperimentrun-async@0
+      #     displayName: "Invoke Pipeline"
+      #     inputs:
+      #       kubeflowEndpoint: '$(KF_ENDPOINT)'
+      #       bearerToken: '$(KFP_API_TOKEN)'
+      #       pipelineVersionID: '$(PIPELINE_VERSION_ID)'
+      #       experimentID: '$(EXPERIMENT_ID)'
+      #       runName: '$(KF_RUN_NAME)'
+      #       pipelineParams: '$(KF_PIPELINE_PARAMS2)'
+      #       runDescription: "{'build_number':'$(Build.BuildNumber)','repo_name':'$(Build.Repository.Name)','branch_name':'$(Build.SourceBranchName)','queued_by':'$(Build.QueuedBy)'}"
 
 
