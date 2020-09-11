@@ -71,75 +71,75 @@ def tacosandburritos_train(
 
     #with dsl.ExitHandler(exit_op=exit_handler_op):
 
-        operations['mlflowproject'] = mlflow_project_op(mlflow_experiment_id=mlflow_experiment_id,  # noqa: E501
-                                                        kf_run_id=dsl.RUN_ID_PLACEHOLDER).apply(use_databricks_secret()).apply(use_image(mlflow_project_image_name))  # noqa: E501
+    operations['mlflowproject'] = mlflow_project_op(mlflow_experiment_id=mlflow_experiment_id,  # noqa: E501
+                                                    kf_run_id=dsl.RUN_ID_PLACEHOLDER).apply(use_databricks_secret()).apply(use_image(mlflow_project_image_name))  # noqa: E501
 
-        operations['preprocess'] = preprocess_op(base_path=persistent_volume_path,  # noqa: E501
-                                                 training_folder=training_folder,  # noqa: E501
-                                                 target=training_dataset,
-                                                 image_size=image_size,
-                                                 zipfile=dataset).apply(use_image(preprocess_image_name))  # noqa: E501
+    operations['preprocess'] = preprocess_op(base_path=persistent_volume_path,  # noqa: E501
+                                                training_folder=training_folder,  # noqa: E501
+                                                target=training_dataset,
+                                                image_size=image_size,
+                                                zipfile=dataset).apply(use_image(preprocess_image_name))  # noqa: E501
 
-        operations['preprocess'].after(operations['mlflowproject'])  # noqa: E501
+    operations['preprocess'].after(operations['mlflowproject'])  # noqa: E501
 
-        operations['training'] = train_op(base_path=persistent_volume_path,
-                                          training_folder=training_folder,
-                                          epochs=2,
-                                          batch=batch,
-                                          image_size=image_size,
-                                          lr=0.0001,
-                                          model_folder=model_folder,
-                                          images=training_dataset,
-                                          dataset=operations['preprocess'].outputs['dataset']). \
-            set_memory_request('16G'). \
-            add_env_variable(V1EnvVar(name="RUN_ID", value=dsl.RUN_ID_PLACEHOLDER)). \
-            add_env_variable(V1EnvVar(name="MLFLOW_TRACKING_URI", value=mlflow_url)). \
-            add_env_variable(V1EnvVar(name="GIT_PYTHON_REFRESH", value='quiet')). \
-            apply(use_image(train_image_name))
+    operations['training'] = train_op(base_path=persistent_volume_path,
+                                        training_folder=training_folder,
+                                        epochs=2,
+                                        batch=batch,
+                                        image_size=image_size,
+                                        lr=0.0001,
+                                        model_folder=model_folder,
+                                        images=training_dataset,
+                                        dataset=operations['preprocess'].outputs['dataset']). \
+        set_memory_request('16G'). \
+        add_env_variable(V1EnvVar(name="RUN_ID", value=dsl.RUN_ID_PLACEHOLDER)). \
+        add_env_variable(V1EnvVar(name="MLFLOW_TRACKING_URI", value=mlflow_url)). \
+        add_env_variable(V1EnvVar(name="GIT_PYTHON_REFRESH", value='quiet')). \
+        apply(use_image(train_image_name))
 
-        # Spot nodepool target
-        # operations['training'].add_toleration(k8s_client.V1Toleration(
-        #     key='kubernetes.azure.com/scalesetpriority',
-        #     operator='Equal',
-        #     value='spot',
-        #     effect="NoSchedule"))
+    # Spot nodepool target
+    # operations['training'].add_toleration(k8s_client.V1Toleration(
+    #     key='kubernetes.azure.com/scalesetpriority',
+    #     operator='Equal',
+    #     value='spot',
+    #     effect="NoSchedule"))
 
-        # Virtual/ACI nodepool target
-        # operations['training'].add_node_selector_constraint(
-        #     label_name='type', value='virtual-kubelet')
-        # operations['training'].add_toleration(k8s_client.V1Toleration(
-        #     key='virtual-kubelet.io/provider', operator='Exists'))
+    # Virtual/ACI nodepool target
+    # operations['training'].add_node_selector_constraint(
+    #     label_name='type', value='virtual-kubelet')
+    # operations['training'].add_toleration(k8s_client.V1Toleration(
+    #     key='virtual-kubelet.io/provider', operator='Exists'))
 
-        operations['training'].after(operations['preprocess'])
+    operations['training'].after(operations['preprocess'])
 
-        operations['evaluate'] = evaluate_op(
-            model=operations['training'].outputs['model'])
-        operations['evaluate'].after(operations['training'])
+    operations['evaluate'] = evaluate_op(
+        model=operations['training'].outputs['model'])
+    operations['evaluate'].after(operations['training'])
 
-        operations['register to AML'] = register_op(base_path=persistent_volume_path,
-                                                    model_file='latest.h5',
-                                                    model_name=model_name,
-                                                    tenant_id='$(AZ_TENANT_ID)',
-                                                    service_principal_id='$(AZ_CLIENT_ID)',
-                                                    service_principal_password='$(AZ_CLIENT_SECRET)',
-                                                    subscription_id='$(AZ_SUBSCRIPTION_ID)',
-                                                    resource_group=resource_group,
-                                                    workspace=workspace,
-                                                    run_id=dsl.RUN_ID_PLACEHOLDER). \
-            apply(use_azure_secret()). \
-            apply(use_image(register_images_name))
+    operations['register to AML'] = register_op(base_path=persistent_volume_path,
+                                                model_file='latest.h5',
+                                                model_name=model_name,
+                                                tenant_id='$(AZ_TENANT_ID)',
+                                                service_principal_id='$(AZ_CLIENT_ID)',
+                                                service_principal_password='$(AZ_CLIENT_SECRET)',
+                                                subscription_id='$(AZ_SUBSCRIPTION_ID)',
+                                                resource_group=resource_group,
+                                                workspace=workspace,
+                                                run_id=dsl.RUN_ID_PLACEHOLDER). \
+        apply(use_azure_secret()). \
+        apply(use_image(register_images_name))
 
-        operations['register to AML'].after(operations['evaluate'])
+    operations['register to AML'].after(operations['evaluate'])
 
-        operations['register to mlflow'] = register_mlflow_op(model='model',
-                                                              model_name=model_name,
-                                                              experiment_name='mexicanfood',
-                                                              run_id=dsl.RUN_ID_PLACEHOLDER). \
-            apply(use_azure_secret()). \
-            add_env_variable(V1EnvVar(name="MLFLOW_TRACKING_URI", value=mlflow_url)). \
-            apply(use_image(register_mlflow_image_name))
+    operations['register to mlflow'] = register_mlflow_op(model='model',
+                                                            model_name=model_name,
+                                                            experiment_name='mexicanfood',
+                                                            run_id=dsl.RUN_ID_PLACEHOLDER). \
+        apply(use_azure_secret()). \
+        add_env_variable(V1EnvVar(name="MLFLOW_TRACKING_URI", value=mlflow_url)). \
+        apply(use_image(register_mlflow_image_name))
 
-        operations['register to mlflow'].after(operations['register to AML'])
+    operations['register to mlflow'].after(operations['register to AML'])
 
     for _, op_1 in operations.items():
         op_1.container.set_image_pull_policy("Always")
