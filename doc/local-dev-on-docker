@@ -15,9 +15,9 @@ Instead, you can share your code with a started container by using bind mounts. 
 
 When starting a new container using Docker CLI, here's how you mount a local "./source_dir":
   
-  Docker CLI (two different options):
-  $ docker run -it -v "$(pwd)/source_dir:/app/target_dir" ubuntu bash
-  $ docker run -it --mount "type=bind,source=$(pwd)/source_dir,target=/app/target_dir" ubuntu bash
+  > Docker CLI (two different options):
+  > $ docker run -it -v "$(pwd)/source_dir:/app/target_dir" ubuntu bash
+  > $ docker run -it --mount "type=bind,source=$(pwd)/source_dir,target=/app/target_dir" ubuntu bash
   ![mount bind](https://docs.docker.com/storage/images/types-of-mounts-bind.png)
   
 To bind mount, you can provide it an absolute path to a host directory and direct where it should be mounted inside the container once you've coloned using --mount.
