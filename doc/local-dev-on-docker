@@ -24,8 +24,6 @@ To bind mount, you can provide it an absolute path to a host directory and direc
 
 Further, to be more efficient, you may consider utilizing docker-compose and using docker-compose.yml files to configure the Docker container. The goal is to use bind mounts to share your project directory with a running container. This will allow you to reuse your development Docker image with every code iteration and a lot more frequently. The content of the local directory overwrites the content from the image when the container has started. All you need to do is build the image once with the required dependencies and OS requirements until either dependencies or OS versions have change (this can be done with a requirements.txt file too). Otherwise, there's no need to recreate a new image when you modify your code.
 
-
-
 Here's an example of creating a new file in a common folder and by running docker-compose up it will exit the container. This can be done like this:
 
 (A simple example of a docker-compose.yml file to mount a local directory)
