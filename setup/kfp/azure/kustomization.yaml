@@ -4,20 +4,16 @@ namespace: kubeflow
 
 bases:
 - github.com/kubeflow/pipelines/manifests/kustomize/base
-- github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic/minio
+- minio-azure-gateway
 
 configMapGenerator:
 - name: pipeline-install-config
   env: params.env
   behavior: merge
-- name: workflow-controller-configmap
-  behavior: replace
-  files:
-  - config
 
 secretGenerator:
 - name: mysql-secret
-  env: secret.env
+  env: mysql-secret.env
   behavior: merge
 
 # Identifier for application manager to apply ownerReference.
