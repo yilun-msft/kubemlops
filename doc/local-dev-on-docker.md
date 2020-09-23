@@ -30,13 +30,13 @@ Further, to be more efficient, you may consider utilizing docker-compose and usi
 Here's an example of creating a new file in a common folder and by running docker-compose up it will exit the container. This can be done like this:
 
 (A simple example of a docker-compose.yml file to mount a local directory)
-
-> version: '3'
-
-> services:
-
-  > example:
-  
+    
+    > Version: '3'
+    
+    > Services:
+       
+       > example
+    
     > image: ubuntu
     
     > volumes:
