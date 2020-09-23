@@ -15,8 +15,10 @@ Instead, you can share your code with a started container by using bind mounts. 
 
 When starting a new container using Docker CLI, here's how you mount a local "./source_dir":
   
-  > Docker CLI (two different options):
+   Docker CLI (two different options):
+  
   > $ docker run -it -v "$(pwd)/source_dir:/app/target_dir" ubuntu bash
+  
   > $ docker run -it --mount "type=bind,source=$(pwd)/source_dir,target=/app/target_dir" ubuntu bash
   
   ![mount bind](https://docs.docker.com/storage/images/types-of-mounts-bind.png)
@@ -29,13 +31,19 @@ Here's an example of creating a new file in a common folder and by running docke
 
 (A simple example of a docker-compose.yml file to mount a local directory)
 
-version: '3'
-services:
-  example:
-    image: ubuntu
-    volumes:
-      - ./source_dir:/app/target_dir
-    command: touch /app/target_dir/hello
+> version: '3'
+
+> services:
+
+  > example:
+  
+    > image: ubuntu
+    
+    > volumes:
+    
+      > - ./source_dir:/app/target_dir
+      
+    > command: touch /app/target_dir/hello
     
 Thus, when building with Docker in your dev environment, you can see results right away by using bind mounts to share code between your local machine and the Docker container. This will ensure that you will no longer need to rebuild your Docker image in development for every small code change. This make iterating a lot faster and makes local developement experience better! 
 
