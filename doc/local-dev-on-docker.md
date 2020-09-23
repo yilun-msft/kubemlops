@@ -2,16 +2,17 @@
 
 ## Problem Statement:
 
-Development in Docker locally can be a big pain. It is slow. A developer is waiting a painful amount of time for the container to restart.
+Development in Docker locally can be a big pain. It is slow. A developer is waiting a painful amount of time for the container to restart after every small code change.
 
 ## Solution:
 
-What if there was a way to bind mounts to share your project directory with a running container so that you can reuse your dev Docker image a lot. Continue reading to find out how!
+What if there was a way to bind mounts to share your project directory with a running container so that you can reuse your dev Docker image more frequently in a painless manner? Continue reading to find out how!
 
 ### Place Your Project Directory Into Docker
 
-Typically, your developement should be designed for fast iterations. However, with Docker, many believe you must create a complete Docker image when deploying your code in the dev environment. That's not needed.
-Instead, you can share your code with a started container by using bind mounts. This'll prevent you from creatinga a new image on each each.
+Typically, your developement environment should be designed for fast iterations. However, with Docker, many believe you must create a complete Docker image when deploying your code in the dev environment. That's not needed.
+
+Instead, you can share your code with a started container by using [bind mounts](https://docs.docker.com/storage/bind-mounts/) This'll prevent you from creatinga a new image on each code change.
 
 When starting a new container using Docker CLI, here's how you mount a local "./source_dir":
   
