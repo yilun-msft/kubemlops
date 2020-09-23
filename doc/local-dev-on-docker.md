@@ -46,5 +46,6 @@ Here's an example of creating a new file in a common folder and by running docke
       
     > command: touch /app/target_dir/hello
     
-Thus, when building with Docker in your dev environment, you can see results right away by using bind mounts to share code between your local machine and the Docker container. This will ensure that you will no longer need to rebuild your Docker image in development for every small code change. This makes iterating a lot faster and makes local developement experience better! 
+Thus, when building with Docker in your dev environment, you can see results right away by using bind mounts to share code between your local machine and the Docker container. This will ensure that you will no longer need to rebuild your Docker image in development for every small code change. 
 
+This makes iterating a lot faster and makes local developement experience better!
