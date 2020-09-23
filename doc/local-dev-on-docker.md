@@ -12,7 +12,7 @@ What if there was a way to bind mounts to share your project directory with a ru
 
 Typically, your developement environment should be designed for fast iterations. However, with Docker, many believe you must create a complete Docker image when deploying your code in the dev environment. That's not needed.
 
-Instead, you can share your code with a started container by using [bind mounts](https://docs.docker.com/storage/bind-mounts/) This'll prevent you from creatinga a new image on each code change.
+Instead, you can share your code with a started container by using [bind mounts](https://docs.docker.com/storage/bind-mounts/) This'll prevent you from creating a new image on each code change.
 
 When starting a new container using Docker CLI, here's how you mount a local "./source_dir":
   
