@@ -1,4 +1,4 @@
-name: CI
+name: Manifest_Test
 # The pipeline is triggered on:
 #  - PR to master (code_quality_checks only)
 #  - Push to master (full cycle)
@@ -13,7 +13,7 @@ on:
     types: [created]
 
 jobs:
-  build_images:
+  build_images_for_manifest_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
