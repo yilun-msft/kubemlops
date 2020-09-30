@@ -21,4 +21,12 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
-      - run: python print("Hello World")
+          
+      - name: Install Python dependencies
+        run: |
+          pip3 install kfp adal --upgrade
+      - name: Run Test Script
+        run: python manifest_tests.py
+        working-directory: code/tests
+        env:
+          PR_NUM: ${{ github.event.issue.number }}  
