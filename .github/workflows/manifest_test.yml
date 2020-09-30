@@ -1,0 +1,22 @@
+name: CI
+# The pipeline is triggered on:
+#  - PR to master (code_quality_checks only)
+#  - Push to master (full cycle)
+#  - PR comment "/build-images" (code_quality_checks + build images)
+#  - PR comment "/build-pipeline" (code_quality_checks + build kfp pipeline)
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  issue_comment:
+    types: [created]
+
+jobs:
+  build_images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm install -g bats
+      - run: bats -v
