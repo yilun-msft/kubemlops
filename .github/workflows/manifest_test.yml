@@ -1,4 +1,4 @@
-name: CI
+name: Manifest_Test
 # The pipeline is triggered on:
 #  - PR to master (code_quality_checks only)
 #  - Push to master (full cycle)
