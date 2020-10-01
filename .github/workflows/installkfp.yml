@@ -43,4 +43,5 @@ jobs:
           export KF_DIR=${BASE_DIR}/${KF_NAME}
           mkdir -p ${KF_DIR}
           cd ${KF_DIR}
+          kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
           
