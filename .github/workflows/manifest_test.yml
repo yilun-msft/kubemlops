@@ -39,21 +39,28 @@ jobs:
         run: sudo apt install curl
       - name: Claim Azure Kubernete cluster
         run: az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --generate-ssh-keys
-              az aks get-credentials -n kf-test-cluster -g kf-test-rg
-              curl –LO https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
-              tar -xvf kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
-              export BASE_DIR=$(echo $(pwd))
-              export PATH=$PATH:$(echo $(pwd))
-              export KF_NAME=kf-test
-              export KF_DIR=${BASE_DIR}/${KF_NAME}
-              mkdir -p ${KF_DIR}
-              cd ${KF_DIR}
-              curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.8 TARGET_ARCH=x86_64 sh -
-              cd istio-1.6.8
-              export PATH=$PWD/bin:$PATH
-              istioctl install --set profile=demo
-              kubectl label namespace default istio-injection=enabled
-              kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
+      - name: Get credentials
+        run: az aks get-credentials -n kf-test-cluster -g kf-test-rg
+      - name: Download and unzip kfctl
+        run: |
+          curl –LO https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
+          tar -xvf kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
+          export BASE_DIR=$(echo $(pwd))
+          export PATH=$PATH:$(echo $(pwd))
+          export KF_NAME=kf-test
+          export KF_DIR=${BASE_DIR}/${KF_NAME}
+          mkdir -p ${KF_DIR}
+          cd ${KF_DIR}
+      - name: Download Istio
+        run: |
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.8 TARGET_ARCH=x86_64 sh -
+          cd istio-1.6.8
+          export PATH=$PWD/bin:$PATH
+          istioctl install --set profile=demo
+          kubectl label namespace default istio-injection=enabled
+      - name: Apply the resource
+        run: |
+          kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
       - name: Run Test Script
         run: python manifest_tests.py
         working-directory: code/tests
