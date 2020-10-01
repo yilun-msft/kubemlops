@@ -28,6 +28,13 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v1
+        with:
+          # Version of kubectl
+          version: latest
+      - name: Create Resource Group
+        run: az group create -n kf-test-rg -l westus2
       - name: Run Test Script
         run: python manifest_tests.py
         working-directory: code/tests
