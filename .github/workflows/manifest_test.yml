@@ -46,6 +46,8 @@ jobs:
         run: az aks get-credentials -n kf-test-cluster -g kf-test-rg
       - name: Download and unzip kfctl
         run: |
+          mkdir kubeflow
+          cd kubeflow
           curl –LO https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
           tar -xvf kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
           export BASE_DIR=$(echo $(pwd))
