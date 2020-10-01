@@ -34,7 +34,9 @@ jobs:
           # Version of kubectl
           version: latest
       - name: Create Resource Group
-        run: az group create -n kf-test-rg -l westus2
+        run: |
+          az login --service-principal --username ${{ secrets.APP_ID }} --password ${{ secrets.PASSWORD }} --tenant ${{ secrets.TENANT_ID }}
+          az group create -n kf-test-rg -l westus2
       - name: Install curl
         run: sudo apt install curl
       - name: Claim Azure Kubernete cluster
