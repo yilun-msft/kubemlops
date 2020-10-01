@@ -36,7 +36,7 @@ jobs:
       - name: Create Resource Group
         run: az group create -n kf-test-rg -l westus2
       - name: Install curl
-        run: apt install curl
+        run: sudo apt install curl
       - name: Claim Azure Kubernete cluster
         run: az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --generate-ssh-keys
               az aks get-credentials -n kf-test-cluster -g kf-test-rg
