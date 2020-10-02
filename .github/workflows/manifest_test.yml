@@ -40,8 +40,10 @@ jobs:
           az group create -n kf-test-rg -l westus2
       - name: Install curl
         run: sudo apt install curl
-      - name: Download and unzip kfctl
+      - name: Apply Resources
         run: |
+          az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --service-principal ${{ secrets.APP_ID }} --client-secret ${{ secrets.PASSWORD }} --generate-ssh-keys
+          az aks get-credentials -n kf-test-cluster -g kf-test-rg 
           mkdir kubeflow
           cd kubeflow
           curl -LO https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
@@ -55,6 +57,15 @@ jobs:
           cd ${KF_DIR}
           echo kf dir is ${KF_DIR}
           kfctl -h
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.8 TARGET_ARCH=x86_64 sh -
+          cd istio-1.6.8
+          export PATH=$PWD/bin:$PATH
+          istioctl install --set profile=demo
+          kubectl label namespace default istio-injection=enabled
+          cd ${KF_DIR}
+          echo currently at $(pwd)
+          echo ${PATH}
+          kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
 #       - name: Claim Azure Kubernete cluster
 #         run: az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --service-principal ${{ secrets.APP_ID }} --client-secret ${{ secrets.PASSWORD }} --generate-ssh-keys 
 #       - name: Get credentials
@@ -66,12 +77,12 @@ jobs:
 #           export PATH=$PWD/bin:$PATH
 #           istioctl install --set profile=demo
 #           kubectl label namespace default istio-injection=enabled
-      - name: Apply the resource
-        run: |
-          cd ${KF_DIR}
-          echo currently at $(pwd)
-          echo ${PATH}
-          kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
+#       - name: Apply the resource
+#         run: |
+#           cd ${KF_DIR}
+#           echo currently at $(pwd)
+#           echo ${PATH}
+#           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
       - name: Run Test Script
         run: python manifest_tests.py
         working-directory: code/tests
