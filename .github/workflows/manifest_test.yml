@@ -5,8 +5,8 @@ name: Manifest_Test
 #  - PR comment "/build-images" (code_quality_checks + build images)
 #  - PR comment "/build-pipeline" (code_quality_checks + build kfp pipeline)
 on:
-#   push:
-#     branches: [master]
+  push:
+    branches: [master]
 #   pull_request:
 #     branches: [master]
   issue_comment:
@@ -58,6 +58,7 @@ jobs:
         run: az aks get-credentials -n kf-test-cluster -g kf-test-rg
       - name: Download Istio
         run: |
+          cd ..
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.8 TARGET_ARCH=x86_64 sh -
           cd istio-1.6.8
           export PATH=$PWD/bin:$PATH
@@ -65,6 +66,7 @@ jobs:
           kubectl label namespace default istio-injection=enabled
       - name: Apply the resource
         run: |
+          cd ${KF_DIR}
           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
       - name: Run Test Script
         run: python manifest_tests.py
