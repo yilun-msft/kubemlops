@@ -43,5 +43,6 @@ jobs:
           export KF_DIR=${BASE_DIR}/${KF_NAME}
           mkdir -p ${KF_DIR}
           cd ${KF_DIR}
+          echo $(pwd)
           kfctl -h
           
