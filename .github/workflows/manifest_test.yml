@@ -84,7 +84,9 @@ jobs:
 #           echo ${PATH}
 #           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
       - name: Run Test Script
-        run: python manifest_tests.py
+        run: |
+          pip install kfp
+          python manifest_tests.py
         working-directory: code/tests
         env:
           PR_NUM: ${{ github.event.issue.number }}
