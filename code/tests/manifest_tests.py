@@ -1,4 +1,24 @@
-import os
-# This is the testing script to make sure Kubeflow is installed and a simple pipeline could be executed
-current_dir = os.getcwd()
-print(current_dir)
+import kfp
+
+def test_func():
+    print ("This is the test function to make sure the installation of kubeflow is correct and pipelines could be" \
+            "executed correctly.")
+    print (1 + 1)
+
+# convert Python function into a pipeline component
+op = kfp.components.func_to_container_op(test_func)
+
+# write a pipeline function using DSL
+@kfp.dsl.pipeline(
+        name='Testing pipeline',
+        description='Testing pipeline'
+        )
+def test_pipeline():
+    my_step = op()
+
+kfp.compiler.Compiler().compile(test_pipeline, 'test-pipeline.zip')
+
+client = kfp.Client()
+experiment = client.create_experiment(name='test')
+run = client.run_pipeline(experiment.id, 'test-pipeline', 'test-pipeline.zip')
+print(run)
