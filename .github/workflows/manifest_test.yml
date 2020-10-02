@@ -69,6 +69,8 @@ jobs:
       - name: Apply the resource
         run: |
           cd ${KF_DIR}
+          echo currently at $(pwd)
+          echo ${PATH}
           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
       - name: Run Test Script
         run: python manifest_tests.py
