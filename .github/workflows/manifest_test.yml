@@ -66,6 +66,9 @@ jobs:
           echo currently at $(pwd)
           echo ${PATH}
           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
+          echo Getting External Ip
+          echo $(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
 #       - name: Claim Azure Kubernete cluster
 #         run: az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --service-principal ${{ secrets.APP_ID }} --client-secret ${{ secrets.PASSWORD }} --generate-ssh-keys 
 #       - name: Get credentials
@@ -83,6 +86,10 @@ jobs:
 #           echo currently at $(pwd)
 #           echo ${PATH}
 #           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
+      - name: Wait for installing all the resources
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '600s'
       - name: Run Test Script
         run: |
           pip install kfp
