@@ -1,11 +1,13 @@
 import kfp
 
-def test_func():
-    print ("This is the test function to make sure the installation of kubeflow is correct and pipelines could be" \
-            "executed correctly.")
+
+def test_func ():
+    print ('This is the test function to make sure the installation of kubeflow is correct ' +
+        'and pipelines could be executed correctly.')
     print (1 + 1)
 
-if __name__== "__main__":
+
+if __name__ == "__main__":
     # convert Python function into a pipeline component
     op = kfp.components.func_to_container_op(test_func)
 
@@ -21,5 +23,7 @@ if __name__== "__main__":
 
     client = kfp.Client()
     experiment = client.create_experiment(name='test')
-    run = client.run_pipeline(experiment.id, 'test-pipeline', 'test-pipeline.zip')
+    run = client.run_pipeline(experiment.id, 
+        'test-pipeline', 
+        'test-pipeline.zip')
     print(run)
