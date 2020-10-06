@@ -5,8 +5,8 @@ name: Manifest_Test
 #  - PR comment "/build-images" (code_quality_checks + build images)
 #  - PR comment "/build-pipeline" (code_quality_checks + build kfp pipeline)
 on:
-  push:
-    branches: [master]
+#   push:
+#     branches: [master]
 #   pull_request:
 #     branches: [master]
   issue_comment:
@@ -42,10 +42,12 @@ jobs:
         run: sudo apt install curl
       - name: Apply Resources
         run: |
+          # Create AKS resources
           az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --service-principal ${{ secrets.APP_ID }} --client-secret ${{ secrets.PASSWORD }} --generate-ssh-keys
           az aks get-credentials -n kf-test-cluster -g kf-test-rg 
           mkdir kubeflow
           cd kubeflow
+          # Download and install Kubeflow
           curl -LO https://github.com/kubeflow/kfctl/releases/download/v1.1.0/kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
           tar -xvf kfctl_v1.1.0-0-g9a3621e_linux.tar.gz
           export BASE_DIR=$(pwd)
@@ -57,6 +59,7 @@ jobs:
           cd ${KF_DIR}
           echo kf dir is ${KF_DIR}
           kfctl -h
+          # Install istio
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.8 TARGET_ARCH=x86_64 sh -
           cd istio-1.6.8
           export PATH=$PWD/bin:$PATH
@@ -68,28 +71,6 @@ jobs:
           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
           echo Getting External Ip
           echo $(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
-#       - name: Claim Azure Kubernete cluster
-#         run: az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --service-principal ${{ secrets.APP_ID }} --client-secret ${{ secrets.PASSWORD }} --generate-ssh-keys 
-#       - name: Get credentials
-#         run: az aks get-credentials -n kf-test-cluster -g kf-test-rg
-#       - name: Download Istio
-#         run: |
-#           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.6.8 TARGET_ARCH=x86_64 sh -
-#           cd istio-1.6.8
-#           export PATH=$PWD/bin:$PATH
-#           istioctl install --set profile=demo
-#           kubectl label namespace default istio-injection=enabled
-#       - name: Apply the resource
-#         run: |
-#           cd ${KF_DIR}
-#           echo currently at $(pwd)
-#           echo ${PATH}
-#           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
-      # - name: Wait for installing all the resources
-      #   uses: jakejarvis/wait-action@master
-      #   with:
-      #     time: '600s'
       - name: Wait for all the resources ready
         run: |
           pip install kubernetes
@@ -102,5 +83,5 @@ jobs:
         working-directory: code/tests
         env:
           PR_NUM: ${{ github.event.issue.number }}
-#       - name: Clean up resources
-#         run: az group delete --name kf-test-rg
+      - name: Clean up resources
+        run: az group delete --name kf-test-rg
