@@ -3,8 +3,8 @@ import kfp
 
 def test_func():
     print('This is the test function to make sure the ' +
-        'installation of kubeflow is correct ' +
-        'and pipelines could be executed correctly.')
+          'installation of kubeflow is correct ' +
+          'and pipelines could be executed correctly.')
     print(1 + 1)
 
 
