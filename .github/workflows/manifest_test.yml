@@ -33,7 +33,7 @@ jobs:
           version: latest
       - name: Create Resource Group
         run: |
-          # curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          # az login using service principal
           az login --service-principal --username ${{ secrets.APP_ID }} --password ${{ secrets.PASSWORD }} --tenant ${{ secrets.TENANT_ID }}
           az group create -n kf-test-rg -l westus2
       - name: Install curl
