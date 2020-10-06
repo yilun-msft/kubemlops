@@ -37,6 +37,7 @@ def check_status():
         if count == 0:
             return
 
+
 if __name__ == "__main__":
     # setting up the timeout threshold
     signal.signal(signal.SIGALRM, handler)
