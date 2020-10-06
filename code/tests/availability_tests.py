@@ -27,8 +27,9 @@ def check_status():
         count = 0
         
         for i in ret.items:
+            print("%s\t%s\t%s" % (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
             if not i.status.container_statuses[0].ready:
-                count =  count + 1
+                count = count + 1
         if count == 0:
             return
 
