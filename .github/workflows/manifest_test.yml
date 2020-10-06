@@ -17,13 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#       - name: Azure Login
-#         uses: Azure/login@v1
-#         with:
-#           # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
-#           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#           # Set this value to true to enable Azure PowerShell Login in addition to Az CLI login
-#           enable-AzPSSession: true
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          # Set this value to true to enable Azure PowerShell Login in addition to Az CLI login
+          enable-AzPSSession: true
       - name: Set up Python 3.7
         uses: actions/setup-python@v1
         with:
@@ -35,7 +35,7 @@ jobs:
           version: latest
       - name: Create Resource Group
         run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          # curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az login --service-principal --username ${{ secrets.APP_ID }} --password ${{ secrets.PASSWORD }} --tenant ${{ secrets.TENANT_ID }}
           az group create -n kf-test-rg -l westus2
       - name: Install curl
@@ -86,10 +86,15 @@ jobs:
 #           echo currently at $(pwd)
 #           echo ${PATH}
 #           kfctl apply -V -f https://raw.githubusercontent.com/kubeflow/manifests/v1.1-branch/kfdef/kfctl_azure.v1.1.0.yaml
-      - name: Wait for installing all the resources
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '600s'
+      # - name: Wait for installing all the resources
+      #   uses: jakejarvis/wait-action@master
+      #   with:
+      #     time: '600s'
+      - name: Wait for all the resources ready
+        run: |
+          pip install kubernetes
+          python availability_tests.py
+        working-directory: code/tests 
       - name: Run Test Script
         run: |
           pip install kfp
