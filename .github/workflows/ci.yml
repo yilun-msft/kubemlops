@@ -5,10 +5,10 @@ name: CI
 #  - PR comment "/build-images" (code_quality_checks + build images)
 #  - PR comment "/build-pipeline" (code_quality_checks + build kfp pipeline)
 on:
-#   push:
-#     branches: [master]
-#   pull_request:
-#     branches: [master]
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
   issue_comment:
     types: [created]
 
