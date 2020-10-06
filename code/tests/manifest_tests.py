@@ -19,12 +19,13 @@ if __name__ == "__main__":
             )
     def test_pipeline():
         my_step = op()
+        print(my_step.name)
 
     kfp.compiler.Compiler().compile(test_pipeline, 'test-pipeline.zip')
 
     client = kfp.Client()
     experiment = client.create_experiment(name='test')
     run = client.run_pipeline(experiment.id, 
-                            'test-pipeline',
-                            'test-pipeline.zip')
+                              'test-pipeline',
+                              'test-pipeline.zip')
     print(run)
