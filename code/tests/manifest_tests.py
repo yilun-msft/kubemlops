@@ -25,6 +25,6 @@ if __name__ == "__main__":
     client = kfp.Client()
     experiment = client.create_experiment(name='test')
     run = client.run_pipeline(experiment.id, 
-            'test-pipeline', 
-            'test-pipeline.zip')
+                            'test-pipeline', 
+                            'test-pipeline.zip')
     print(run)

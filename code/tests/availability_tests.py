@@ -10,7 +10,8 @@ class TimeoutError(Exception):
 
 def handler(signum, frame):
     print("System Timed out before all the resources ready")
-    raise TimeoutError("The function timed out before the resources get ready, which might indicate a problem")
+    raise TimeoutError('The function timed out before the resources get ready,' + 
+                        ' which might indicate a problem')
 
 
 def check_status():
@@ -22,7 +23,7 @@ def check_status():
     config.load_kube_config()
 
     v1 = client.CoreV1Api()
-    while (True) :
+    while (True):
         # perserve some time before check the status
         time.sleep(INTERVAL_BTW_CHECK)
 
@@ -30,13 +31,13 @@ def check_status():
         count = 0
 
         for i in ret.items:
-            print("%s\t%s\t%s" % (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
+            print("%s\t%s\t%s" % (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
             if not i.status.container_statuses[0].ready:
                 count = count + 1
         if count == 0:
             return
 
-if __name__== "__main__":
+if __name__ == "__main__":
     # setting up the timeout threshold
     signal.signal(signal.SIGALRM, handler)
     signal.alarm(TIMEOUT_THRESHOLD)
