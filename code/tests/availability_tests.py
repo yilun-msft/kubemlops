@@ -10,8 +10,8 @@ class TimeoutError(Exception):
 
 def handler(signum, frame):
     print("System Timed out before all the resources ready")
-    raise TimeoutError('The function timed out before the resources get ready,' + 
-                        ' which might indicate a problem')
+    raise TimeoutError('The function timed out before the resources get ' + 
+                            'ready, which might indicate a problem')
 
 
 def check_status():
@@ -31,8 +31,8 @@ def check_status():
         count = 0
 
         for i in ret.items:
-            print("%s\t%s\t%s" % (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
             if not i.status.container_statuses[0].ready:
+                print('{0} is not ready.'.format(i.metadata.name))
                 count = count + 1
         if count == 0:
             return
