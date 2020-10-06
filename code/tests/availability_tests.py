@@ -3,12 +3,15 @@ import signal
 INTERVAL_BTW_CHECK = 30
 TIMEOUT_THRESHOLD = 600
 
+
 class TimeoutError(Exception):
     pass
+
 
 def handler(signum, frame):
     print("System Timed out before all the resources ready")
     raise TimeoutError("The function timed out before the resources get ready, which might indicate a problem")
+
 
 def check_status():
     import time
@@ -22,10 +25,10 @@ def check_status():
     while (True) :
         # perserve some time before check the status
         time.sleep(INTERVAL_BTW_CHECK)
-        
+
         ret = v1.list_pod_for_all_namespaces(watch=False)
         count = 0
-        
+
         for i in ret.items:
             print("%s\t%s\t%s" % (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
             if not i.status.container_statuses[0].ready:
