@@ -11,7 +11,7 @@ class TimeoutError(Exception):
 def handler(signum, frame):
     print("System Timed out before all the resources ready")
     raise TimeoutError('The function timed out before the resources get ' + 
-                            'ready, which might indicate a problem')
+                       'ready, which might indicate a problem')
 
 
 def check_status():
