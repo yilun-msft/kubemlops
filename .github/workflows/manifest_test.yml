@@ -15,6 +15,7 @@ on:
 jobs:
   build_images_for_manifest_test:
     runs-on: ubuntu-latest
+    if: contains(github.event.comment.body, '/trigger-manifest-tests') || github.event_name != 'issue_comment'
     steps:
       - uses: actions/checkout@v2
       - name: Azure Login
