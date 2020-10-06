@@ -1,9 +1,6 @@
 name: Manifest_Test
 # The pipeline is triggered on:
-#  - PR to master (code_quality_checks only)
-#  - Push to master (full cycle)
-#  - PR comment "/build-images" (code_quality_checks + build images)
-#  - PR comment "/build-pipeline" (code_quality_checks + build kfp pipeline)
+#  - PR comment "/trigger-manifest-tests" (build images)
 on:
 #   push:
 #     branches: [master]
