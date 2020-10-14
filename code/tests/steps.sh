@@ -1,6 +1,4 @@
 # Create AKS resources
-az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --service-principal ${{ secrets.APP_ID }} --client-secret ${{ secrets.PASSWORD }} --generate-ssh-keys
-az aks get-credentials -n kf-test-cluster -g kf-test-rg 
 mkdir kubeflow
 cd kubeflow
 # Download and install Kubeflow

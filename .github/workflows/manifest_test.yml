@@ -38,8 +38,11 @@ jobs:
           az group create -n kf-test-rg -l westus2
       - name: Install curl
         run: sudo apt install curl
-      - name: Apply Resources
+      - name: Create AKS cluster and Install Kubeflow
         run: |
+          az aks create -g kf-test-rg -n kf-test-cluster -s Standard_D4s_v3 -c 2 -l westus2 --service-principal ${{ secrets.APP_ID }} --client-secret ${{ secrets.PASSWORD }} --generate-ssh-keys
+          az aks get-credentials -n kf-test-cluster -g kf-test-rg
+          # Steps for installing KF should follow steps.sh
           sh steps.sh
         working-directory: code/tests
       - name: Wait for all the resources ready
