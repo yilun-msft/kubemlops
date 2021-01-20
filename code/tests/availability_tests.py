@@ -1,7 +1,7 @@
 import signal
 
 INTERVAL_BTW_CHECK = 30
-TIMEOUT_THRESHOLD = 720
+TIMEOUT_THRESHOLD = 900
 
 
 class TimeoutError(Exception):
