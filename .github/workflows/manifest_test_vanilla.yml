@@ -1,4 +1,4 @@
-name: Manifest_Test
+name: Vanilla Installation of Kubeflow kf v1.2
 # The pipeline is triggered on:
 #  - PR comment "/trigger-vanilla-tests" (trigger-manifest-tests)
 on:
